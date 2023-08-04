@@ -1,6 +1,5 @@
 import React from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
-import Loader from 'components/Loader/Loader';
 
 const ImageGallery = ({ data }) => {
   if (!data) {
