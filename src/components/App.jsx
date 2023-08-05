@@ -66,14 +66,6 @@ class App extends Component {
 
     return (
       <>
-        <button
-          type="button"
-          onClick={() => {
-            alert('Misha loh');
-          }}
-        >
-          Test
-        </button>
         <Searchbar onSearch={this.handleSearch} />
         {imageData && <ImageGallery data={imageData} />}
         {loading && <Loader />}
