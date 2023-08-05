@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../Modal/Modal';
 
 export const ImageGalleryItem = ({ card }) => {
@@ -11,6 +11,14 @@ export const ImageGalleryItem = ({ card }) => {
   const closeModal = () => {
     setModalOpen(false);
   };
+
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [modalOpen]);
 
   return (
     <>
@@ -27,3 +35,4 @@ export const ImageGalleryItem = ({ card }) => {
     </>
   );
 };
+export default ImageGalleryItem;

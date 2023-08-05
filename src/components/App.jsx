@@ -12,21 +12,26 @@ class App extends Component {
     countPage: 1,
     lastSearch: '',
     countOfHits: null,
+    lastHits: 0,
   };
 
   loadMoreImages = async () => {
     this.setState({ loading: true });
+
     try {
-      const data = await FetchImages(
-        this.state.lastSearch,
-        this.state.countPage
+      const { lastSearch, countPage } = this.state;
+      const data = await FetchImages(lastSearch, countPage);
+
+      this.setState(
+        prevState => ({
+          countPage: prevState.countPage + 1,
+          imageData: prevState.imageData.concat(data.hits),
+          loading: false,
+          countOfHits: prevState.countOfHits + data.hits.length,
+          lastHits: data.hits,
+        }),
+        () => {}
       );
-      this.setState(prevState => ({
-        countPage: prevState.countPage + 1,
-        imageData: this.state.imageData.concat(data.hits),
-        loading: false,
-        countOfHits: data.hits.length,
-      }));
     } catch (error) {
       console.error('Error fetching images:', error);
       this.setState({ loading: false });
@@ -34,49 +39,45 @@ class App extends Component {
   };
 
   handleSearch = async value => {
-    if (this.state.lastSearch !== value) {
-      this.setState(
-        { loading: true, lastSearch: value, countPage: 1 },
-        async () => {
-          try {
-            const data = await FetchImages(value, this.state.countPage);
-            this.setState({
-              countPage: this.state.countPage + 1,
-              imageData: data.hits,
-              loading: false,
-              countOfHits: data.hits.length,
-            });
-          } catch (error) {
-            console.error('Error fetching images:', error);
-            this.setState({ loading: false });
-          }
-        }
-      );
+    const { lastSearch } = this.state;
+    if (lastSearch !== value) {
+      this.setState({ loading: true, lastSearch: value, countPage: 1 });
     } else {
-      try {
-        const data = await FetchImages(value, this.state.countPage);
-        this.setState({
-          countPage: this.state.countPage + 1,
-          imageData: data.hits,
-          loading: false,
-          countOfHits: data.hits.length,
-        });
-      } catch (error) {
-        console.error('Error fetching images:', error);
-        this.setState({ loading: false });
-      }
+      this.setState({ loading: true });
+    }
+
+    try {
+      const data = await FetchImages(value, this.state.countPage);
+      this.setState(prevState => ({
+        countPage: prevState.countPage + 1,
+        imageData: data.hits,
+        loading: false,
+        countOfHits: data.hits.length,
+        lastHits: data.hits,
+      }));
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      this.setState({ loading: false });
     }
   };
 
   render() {
-    const { imageData, loading, countOfHits } = this.state;
+    const { imageData, loading, countOfHits, lastHits } = this.state;
 
     return (
       <>
+        <button
+          type="button"
+          onClick={() => {
+            alert('Misha loh');
+          }}
+        >
+          Test
+        </button>
         <Searchbar onSearch={this.handleSearch} />
-        <ImageGallery data={imageData} />
+        {imageData && <ImageGallery data={imageData} />}
         {loading && <Loader />}
-        {countOfHits === 12 && !loading && (
+        {lastHits.length === 12 && !loading && (
           <Button onClick={this.loadMoreImages} />
         )}
       </>
