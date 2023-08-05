@@ -62,7 +62,7 @@ class App extends Component {
   };
 
   render() {
-    const { imageData, loading, countOfHits, lastHits } = this.state;
+    const { imageData, loading, lastHits } = this.state;
 
     return (
       <>

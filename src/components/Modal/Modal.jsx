@@ -7,19 +7,19 @@ export const Modal = ({ src, alt, closeModal }) => {
     }
   };
 
-  const handleEscKey = event => {
-    if (event.key === 'Escape') {
-      closeModal();
-    }
-  };
-
   useEffect(() => {
+    const handleEscKey = event => {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    };
+
     document.addEventListener('keydown', handleEscKey);
 
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
-  }, []);
+  }, [closeModal]);
 
   return (
     <div className="overlay" onClick={handleOverlayClick}>
