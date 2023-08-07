@@ -15,50 +15,54 @@ class App extends Component {
     lastHits: 0,
   };
 
-  loadMoreImages = async () => {
-    this.setState({ loading: true });
+  loadMoreImages = () => {
+    this.setState(prevState => ({
+      countPage: prevState.countPage + 1,
+    }));
+  };
 
-    try {
-      const { lastSearch, countPage } = this.state;
-      const data = await FetchImages(lastSearch, countPage);
+  async componentDidUpdate(prevProps, prevState) {
+    const { lastSearch, countPage } = this.state;
 
-      this.setState(
-        prevState => ({
-          countPage: prevState.countPage + 1,
+    if (prevState.countPage !== countPage) {
+      this.setState({ loading: true });
+
+      try {
+        const data = await FetchImages(lastSearch, countPage);
+
+        this.setState(prevState => ({
           imageData: prevState.imageData.concat(data.hits),
           loading: false,
           countOfHits: prevState.countOfHits + data.hits.length,
           lastHits: data.hits,
-        }),
-        () => {}
-      );
-    } catch (error) {
-      console.error('Error fetching images:', error);
-      this.setState({ loading: false });
+        }));
+      } catch (error) {
+        console.error('Error fetching images:', error);
+        this.setState({ loading: false });
+      }
     }
-  };
+  }
 
   handleSearch = async value => {
     const { lastSearch } = this.state;
-    if (lastSearch !== value) {
-      this.setState({ loading: true, lastSearch: value, countPage: 1 });
-    } else {
-      this.setState({ loading: true });
-    }
-
-    try {
-      const data = await FetchImages(value, this.state.countPage);
-      this.setState(prevState => ({
-        countPage: prevState.countPage + 1,
-        imageData: data.hits,
-        loading: false,
-        countOfHits: data.hits.length,
-        lastHits: data.hits,
-      }));
-    } catch (error) {
-      console.error('Error fetching images:', error);
-      this.setState({ loading: false });
-    }
+    this.setState(
+      { loading: true, lastSearch: value, countPage: 1 },
+      async () => {
+        try {
+          const data = await FetchImages(value, this.state.countPage);
+          this.setState(prevState => ({
+            countPage: 1,
+            imageData: data.hits,
+            loading: false,
+            countOfHits: data.hits.length,
+            lastHits: data.hits,
+          }));
+        } catch (error) {
+          console.error('Error fetching images:', error);
+          this.setState({ loading: false });
+        }
+      }
+    );
   };
 
   render() {
