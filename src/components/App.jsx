@@ -44,7 +44,6 @@ class App extends Component {
   }
 
   handleSearch = async value => {
-    const { lastSearch } = this.state;
     this.setState(
       { loading: true, lastSearch: value, countPage: 1 },
       async () => {
