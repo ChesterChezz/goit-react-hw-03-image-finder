@@ -1,15 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export class Modal extends Component {
+class Modal extends React.Component {
   componentDidMount() {
     document.addEventListener('keydown', this.handleEscKey);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.closeModal !== this.props.closeModal) {
-      document.removeEventListener('keydown', this.handleEscKey);
-      document.addEventListener('keydown', this.handleEscKey);
-    }
   }
 
   componentWillUnmount() {

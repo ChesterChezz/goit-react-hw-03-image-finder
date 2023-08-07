@@ -12,14 +12,6 @@ export const ImageGalleryItem = ({ card }) => {
     setModalOpen(false);
   };
 
-  useEffect(() => {
-    if (modalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  }, [modalOpen]);
-
   return (
     <>
       <li className="gallery-item" onClick={openModal}>

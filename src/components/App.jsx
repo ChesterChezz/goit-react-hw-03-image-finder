@@ -7,7 +7,7 @@ import Button from './Button/Button';
 
 class App extends Component {
   state = {
-    imageData: null,
+    imageData: [],
     loading: false,
     countPage: 1,
     lastSearch: '',
@@ -24,7 +24,10 @@ class App extends Component {
   async componentDidUpdate(prevProps, prevState) {
     const { lastSearch, countPage } = this.state;
 
-    if (prevState.countPage !== countPage) {
+    if (
+      prevState.countPage !== countPage ||
+      prevState.lastSearch !== lastSearch
+    ) {
       this.setState({ loading: true });
 
       try {
@@ -32,36 +35,25 @@ class App extends Component {
 
         this.setState(prevState => ({
           imageData: prevState.imageData.concat(data.hits),
-          loading: false,
           countOfHits: prevState.countOfHits + data.hits.length,
           lastHits: data.hits,
         }));
       } catch (error) {
         console.error('Error fetching images:', error);
         this.setState({ loading: false });
+      } finally {
+        this.setState({ loading: false });
       }
     }
   }
 
   handleSearch = async value => {
-    this.setState(
-      { loading: true, lastSearch: value, countPage: 1 },
-      async () => {
-        try {
-          const data = await FetchImages(value, this.state.countPage);
-          this.setState(prevState => ({
-            countPage: 1,
-            imageData: data.hits,
-            loading: false,
-            countOfHits: data.hits.length,
-            lastHits: data.hits,
-          }));
-        } catch (error) {
-          console.error('Error fetching images:', error);
-          this.setState({ loading: false });
-        }
-      }
-    );
+    this.setState({
+      loading: true,
+      lastSearch: value,
+      countPage: 1,
+      imageData: [],
+    });
   };
 
   render() {
