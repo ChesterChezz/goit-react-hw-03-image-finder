@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Modal from '../Modal/Modal';
 
 export const ImageGalleryItem = ({ card }) => {
